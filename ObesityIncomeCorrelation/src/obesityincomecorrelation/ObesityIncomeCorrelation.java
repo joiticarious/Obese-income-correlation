@@ -20,11 +20,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
@@ -39,6 +41,17 @@ public class ObesityIncomeCorrelation extends Application {
        
        Correlation pearsons;
        
+       //array for the datasets
+       double[] overallArray;
+       double[] blackArray;
+       double[] whiteArray;
+       double[] hispanicArray;
+       double[] incomeArray;
+       
+       int counter;
+       
+       Text text;
+       
 
        //Note: the rows without data in the csv were replaced with 0. This is to prevent error when converting String to Double
               //however, the graph does not display the data as the X and Y axes do not include 0
@@ -47,13 +60,24 @@ public class ObesityIncomeCorrelation extends Application {
     @Override
     public void start(Stage primaryStage) {
         
+        overallArray = new double[51];
+        blackArray = new double[51];
+        whiteArray = new double[51];
+        hispanicArray = new double[51];
+        incomeArray = new double[51];
         
         pearsons = new Correlation();
         
         Button btn = new Button();
         
-        final Label label = new Label("Income & Obesity Table");
-        label.setFont(new Font("Segoe UI Semibold", 20));
+        text = new Text();
+        
+        final Label label = new Label("Average Income in different USA states & Obesity Rate Table");
+        label.setFont(new Font("Segoe UI Semibold", 20)); 
+        
+        final Label viewlabel = new Label("View:");
+     
+        
       
         //this is the first column in the table
         TableColumn firstCol = new TableColumn("S/N");
@@ -95,35 +119,39 @@ public class ObesityIncomeCorrelation extends Application {
         
         //assigns list to the table
         table.setItems(dd);
-        table.setMinWidth(600); //table's default minimum width
+        table.setMinWidth(500); //table's default minimum width
         table.setMinHeight(900); // table's default maximum height
         table.getColumns().addAll(firstCol,secondCol,seventhCol,thirdCol,fourthCol,fifthCol,sixthCol);
         
        }catch(Exception e){
                  e.printStackTrace();
-               }
+               }//end of catch 
         
         //this is the choicebox or dropdown menu as popularly known
         final ChoiceBox<String> dropdown = new ChoiceBox<String>();
         
         //populates the ChoiceBox with values
-        dropdown.getItems().addAll("Overall", "All" , "White","Black","Hispanic");
+        dropdown.getItems().addAll("Obesity Rate Vrs Overall", "All" , "Obesity Rate Vrs White Ethnic Group","Obesity Rate Vrs Black Ethnic Group","Obesity Rate Vrs Hispanic Ethnic Group");
         
         //sets default value
-        dropdown.setValue("Overall");
+        dropdown.setValue("Obesity Rate Vrs Overall");
         
         //this is an horizontal box which is a container that aligns elements horizontally 
         HBox actionMenu = new HBox();
-        actionMenu.setSpacing(100);
-        actionMenu.getChildren().addAll(dropdown,btn); // the choice box and button are added to this container
+        actionMenu.setSpacing(5);
+        actionMenu.getChildren().addAll(viewlabel,dropdown,btn); // the choice box and button are added to this container
+        
+        //sets margin for viewlabel
+       HBox.setMargin(viewlabel, new Insets(5,5,5,50));
         
         //this is a vertical box which is a container that aligns elements vertically
         VBox leftMenu = new VBox();
-        leftMenu.setSpacing(10);
+        leftMenu.setSpacing(20);
         leftMenu.getChildren().addAll(label,table); // label, table and actionMenu are added to this container
                                                                // which will be on the left side
         
-        
+        VBox.setMargin(label, new Insets(10,10,10,50));
+        VBox.setMargin(table, new Insets(0,10,10,20));
   
        
         final NumberAxis xAxis = new NumberAxis(40000,70000,200);
@@ -133,7 +161,7 @@ public class ObesityIncomeCorrelation extends Application {
         yAxis.setLabel("Obesity Rate (%)");
         xAxis.setLabel("Income ($)");
         sc.setTitle("Scatter Plot for Obesity Rate - Average Income in USA");
-        sc.setMinHeight(900);
+        sc.setMinHeight(700);
         
         final XYChart.Series overallseries = new XYChart.Series<>();
         overallseries.setName("Overall Obesity");
@@ -151,7 +179,18 @@ public class ObesityIncomeCorrelation extends Application {
         
         
         try{
+            
+            counter = 0; //sets counter to zero 
+            
+            
         for(Data d: oi.we()){
+            
+            //retrieves data from Data class object named d and assigned to doule arrays after conversion from String to Array 
+           overallArray[counter] = Double.valueOf(d.getOverall());
+           whiteArray[counter] = Double.valueOf(d.getWhite());
+           blackArray[counter] = Double.valueOf(d.getBlack());
+           hispanicArray[counter] = Double.valueOf(d.getHispanic());
+           incomeArray[counter] = Double.valueOf(d.getIncome());
             
             overallseries.getData().add(new XYChart.Data(Double.valueOf(d.getIncome()),Double.valueOf(d.getOverall())));
             
@@ -161,24 +200,28 @@ public class ObesityIncomeCorrelation extends Application {
             
             blackseries.getData().add(new XYChart.Data(Double.valueOf(d.getIncome()),Double.valueOf(d.getBlack())));
             
-        }
+            counter++;
+            
+        }//end of for loop
+        
+        Result(Correlation.getPearsonCorrelation(overallArray,incomeArray));
+        
         }catch(Exception e){
             
-        }
+            e.printStackTrace();
+            
+        }//end of catch
+        
+        
         
         VBox tableMenu = new VBox();
-        tableMenu.setSpacing(10);
-        tableMenu.getChildren().addAll(sc,actionMenu);
+        tableMenu.setSpacing(30);
+        tableMenu.getChildren().addAll(sc,actionMenu,text);
+        
+        VBox.setMargin(text, new Insets(5,5,5,50));
         
         sc.getData().addAll(overallseries);
-       // sc.getData().addAll();
-        
-      //  XYChart.Series series1 = new XYChart.Series();
-        
-        
-        //chart 
-       // final LineChart<String, Number> linechart = new LineChart<>(,);
-       // linechart.setTitle("Line Chart");
+   
         
         
         final BorderPane root = new BorderPane();
@@ -213,37 +256,40 @@ public class ObesityIncomeCorrelation extends Application {
                 sc.getData().addAll(hispanicseries);
                 break;
             
-            case "Overall":
+            case "Obesity Rate Vrs Overall":
              
                 sc.getData().remove(blackseries);
                 sc.getData().remove(whiteseries);
                 sc.getData().remove(hispanicseries);
                 sc.getData().addAll(overallseries);
+                Result(Correlation.getPearsonCorrelation(overallArray,incomeArray));
                 break;
                 
-            case "White":
+            case "Obesity Rate Vrs White Ethnic Group":
                 
                 sc.getData().remove(blackseries);
                 sc.getData().remove(hispanicseries);
                 sc.getData().remove(overallseries);
                 sc.getData().addAll(whiteseries);
+                Result(Correlation.getPearsonCorrelation(whiteArray,incomeArray));
                 break;
                 
-            case "Black":
+            case "Obesity Rate Vrs Black Ethnic Group":
       
                 sc.getData().remove(hispanicseries);
                 sc.getData().remove(whiteseries);
                 sc.getData().remove(overallseries);
                 sc.getData().addAll(blackseries);
-                
+                Result(Correlation.getPearsonCorrelation(blackArray,incomeArray));
                 break;
                 
-            case "Hispanic":
+            case "Obesity Rate Vrs Hispanic Ethnic Group":
                 
                 sc.getData().remove(blackseries);
                 sc.getData().remove(whiteseries);
                 sc.getData().remove(overallseries);
                 sc.getData().addAll(hispanicseries);
+                Result(Correlation.getPearsonCorrelation(hispanicArray,incomeArray));
                 break;
         }
                  
@@ -253,9 +299,9 @@ public class ObesityIncomeCorrelation extends Application {
         });
       
         
-        Scene scene = new Scene(root, 1800, 1000);
+        Scene scene = new Scene(root, 1800, 1000); //default width and height of the screen
         
-        primaryStage.setTitle("Obesity - Income Correlation");
+        primaryStage.setTitle("USA Obesity Rate - Average Income Overview");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -267,29 +313,27 @@ public class ObesityIncomeCorrelation extends Application {
         launch(args);
         
       
-    }
+    } //end of main method
     
-    private void getChoice(ChoiceBox<String> dropdown){
+    private void Result(double result){
         
-        //assigns the dropdown value to v
-        String v = dropdown.getValue();
         
-       // System.out.print(v);
-        
-        switch(v){
+        if((result>= 0.5 && result <= 1.0) || (result >= -0.5 && result <= 1.0)){
             
-            case "All":
-                break;
-            case "White":
-                
-               // fourthCol.setVisible(true);
-                break;
-            case "Black":
-                break;
-            case "Hispanic":
-                break;
+            text.setText("There is High correlation between Average Income and this Obseity Rate "+result);
         }
-    }
+        else if ((result >= 0.3 && result <= 0.5) || (result >= -0.03 && result <= 0.5)){
+            
+             text.setText("There is Medium correlation between Average Income and this Obseity Rate "+result);
+            
+        }else if((result >= 0.1 && result <= 0.3) || (result >= -0.1 && result <= -0.3)){
+            
+             text.setText("There is Low correlation between Average Income and this Obseity Rate "+result);
+        }
+        
+        
+        
+    }//end of Result method
     
 }
 
@@ -318,6 +362,6 @@ class Correlation{
         double cov_x_y = sum_coproduct / scores1.length;
         result = cov_x_y / (pop_sd_x*pop_sd_y);
         return result;
-    }
+    } //end of getPearsonCorrelation method
     
-}
+}//end of Correlation class
