@@ -77,7 +77,7 @@ public class obeseincome{
             
                data = new Data(array[STATE],array[OVERALL],array[WHITE],array[BLACK],array[HISPANIC],array[INCOME]);
               
-               dataList.add(data);
+               dataList.add(data); //adds the Data class object to dataList list
                
         }//end of if statement
     
@@ -100,13 +100,7 @@ public class obeseincome{
             }
         }
          
-       //  for(Data d: dataList){
-             
-          //   System.out.println(row+" "+d.getState()+","+d.getOverall()+","+d.getWhite()+","+d.getBlack()+","+d.getHispanic()+","+d.getIncome());
-             
-           //  System.out.println(d.getWhite());
-         //    row++;
-        // }
+    
         
      return dataList;
   }//end of we method
