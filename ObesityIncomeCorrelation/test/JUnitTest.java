@@ -28,6 +28,8 @@ public class JUnitTest {
     private String hispanic = "19";
     private String income = "60264";
     
+    private int listsize= 51;
+    
     Data data;
     
     obeseincome oi;
@@ -126,6 +128,19 @@ public class JUnitTest {
         
     }
     
-
+          @Test
+    public void testListSize(){
+        
+        System.out.println("Data List Size");
+        int expResult = listsize;
+        try{
+        int result = oi.we().size();
+        assertEquals(expResult, result);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        
+    }
     
 }
