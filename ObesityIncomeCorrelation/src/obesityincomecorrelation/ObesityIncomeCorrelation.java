@@ -48,6 +48,8 @@ public class ObesityIncomeCorrelation extends Application {
        double[] hispanicArray;
        double[] incomeArray;
        
+       double[] incomeArray2;
+       
        int counter;
        
        Text text;
@@ -67,6 +69,8 @@ public class ObesityIncomeCorrelation extends Application {
         whiteArray = new double[51];
         hispanicArray = new double[51];
         incomeArray = new double[51];
+        
+        incomeArray2 = new double[51];
         
         pearsons = new Correlation();
         
@@ -161,8 +165,8 @@ public class ObesityIncomeCorrelation extends Application {
         //For X Axis, the lowest point on the graph is 40000, the highest point is 70000 and each value is incremented by 200
         final NumberAxis xAxis = new NumberAxis(40000,70000,200);
         
-        //For Y Axis, the lowest point on the graph is 20, the highest point is 37 and each value is incremented by 1
-        final NumberAxis yAxis = new NumberAxis(20,37,1);
+        //For Y Axis, the lowest point on the graph is 20, the highest point is 45 and each value is incremented by 1
+        final NumberAxis yAxis = new NumberAxis(20,45,1);
         
         //ScatterChart class is a Chart type that plots symbols for the data points in a series
         final ScatterChart<Number, Number> sc = new ScatterChart<Number, Number>(xAxis, yAxis);
@@ -200,11 +204,19 @@ public class ObesityIncomeCorrelation extends Application {
             //retrieves data from Data class object named d and assigned to doule arrays after conversion from String to Array 
            overallArray[counter] = Double.valueOf(d.getOverall());
            whiteArray[counter] = Double.valueOf(d.getWhite());
-           blackArray[counter] = Double.valueOf(d.getBlack());
            hispanicArray[counter] = Double.valueOf(d.getHispanic());
            incomeArray[counter] = Double.valueOf(d.getIncome());
             
            
+           //this if statement checks if value of getBlack method is not zero, if true executes the code within the bracket
+           // This was implemented becase the black ethnicity is short of 3 data, hence, it is required to ignore the income rate
+           //for that particular state 
+           
+           if(Double.valueOf(d.getBlack())!=0){
+               
+                blackArray[counter] = Double.valueOf(d.getBlack());
+                incomeArray2[counter] = Double.valueOf(d.getIncome());
+           }
            
            //income and repective obesity rates are assigned to XYChart which are added to different series.
            //This gives the user the priviledge to check different correlations between average income and obesity rate in all or different
@@ -308,7 +320,7 @@ public class ObesityIncomeCorrelation extends Application {
                 sc.getData().remove(whiteseries);
                 sc.getData().remove(overallseries);
                 sc.getData().addAll(blackseries);
-                Result(Correlation.getPearsonCorrelation(blackArray,incomeArray));
+                Result(Correlation.getPearsonCorrelation(blackArray,incomeArray2));
                 break;
                 
             case "Obesity Rate Vrs Hispanic Ethnic Group":
