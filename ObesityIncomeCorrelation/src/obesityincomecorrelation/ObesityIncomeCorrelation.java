@@ -293,6 +293,7 @@ public class ObesityIncomeCorrelation extends Application {
                 
                 //the ScatterChart's data are replaced with that of whiteseries
                 sc.getData().remove(blackseries);
+                sc.getData().remove(whiteseries);
                 sc.getData().remove(hispanicseries);
                 sc.getData().remove(overallseries);
                 sc.getData().addAll(whiteseries);
@@ -302,6 +303,7 @@ public class ObesityIncomeCorrelation extends Application {
             case "Obesity Rate Vrs Black Ethnic Group":
       
                 //the ScatterChart's data are replaced with that of blackseries
+                sc.getData().remove(blackseries);
                 sc.getData().remove(hispanicseries);
                 sc.getData().remove(whiteseries);
                 sc.getData().remove(overallseries);
@@ -314,6 +316,7 @@ public class ObesityIncomeCorrelation extends Application {
                 //the ScatterChart's data are replaced with that of hispanicseries
                 sc.getData().remove(blackseries);
                 sc.getData().remove(whiteseries);
+                sc.getData().remove(hispanicseries);
                 sc.getData().remove(overallseries);
                 sc.getData().addAll(hispanicseries);
                 Result(Correlation.getPearsonCorrelation(hispanicArray,incomeArray));
