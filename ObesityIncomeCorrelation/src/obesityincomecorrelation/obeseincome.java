@@ -10,14 +10,13 @@ import java.util.List;
 
 public class obeseincome{
     
-   // public static Double[][] obeserate = new Double [51][5];
-   // public static Double[][] income = new Double [51][2]; 
-    
+    //this is the file path of the csv file
     private static final String filepath= "src/doc/Obesity prevalence rate.csv";
+    
     
     private static final String COMMA = ",";
     
-    //these are the indexes
+    //these are the indexes or position of each data
     private static final int STATE = 0;
     private static final int OVERALL = 1;
     private static final int WHITE = 2;
@@ -26,22 +25,17 @@ public class obeseincome{
     private static final int INCOME = 5;
     
     private String state;
-   // private int overall_obesity = 0;
-   // private int non_hisoanic_white = 0;
-   // private int non_hispanic_black = 0;
-  //  private int hispanic = 0;
-   // private int income = 0;
-    
+ 
     private Scanner scanner;
     
     Data data;
     
-    List<Data> dataList;
+    List<Data> dataList; //List for Data object
     
     String line;
     
    
-    
+    //default constructor
     public obeseincome(){
         
         dataList = new ArrayList<Data>();
@@ -49,6 +43,7 @@ public class obeseincome{
          state = null;
     }
      
+    //This method return a Data List
     public List<Data> we() throws FileNotFoundException{
 
          int row =1;
@@ -92,12 +87,15 @@ public class obeseincome{
             
             try{ //extra precaution
                 
+                //try close the scanner
             scanner.close();
             
-            }catch(Exception ioe){
+            }//end of try
+            catch(Exception ioe){
+                
                 ioe.printStackTrace();
                 
-            }
+            }//end of catch
         }
          
     
