@@ -6,14 +6,11 @@
 
 ## Source file: Obesity prevelance rate.csv 
 
-## Image: model.png
+## Class Diagram: doc/model.png
 
-## Data:
+## Author: Cornelius Oludeyi, Mshari Algazlan and Hongbin Sun.
 
-
-## Goals:
-
-
+## Youtube Link: https://www.youtube.com/watch?v=fWhGXM0o4Gw&feature=youtu.be
 
 ## Data Structure:
 
@@ -90,3 +87,8 @@ All 6 tests passed in 0.535 seconds.
 
 1. Obesity prevalence rate.cvs (data)  
 2. model.png (class diagram)
+
+
+## Conclusion:
+
+Obesity rate tends to increase with Average Income.
